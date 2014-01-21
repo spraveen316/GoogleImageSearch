@@ -52,7 +52,7 @@ public class SettingsActivity extends Activity implements OnItemSelectedListener
 		filters.append(imageSize == null ? null : imageSize + "%20");
 		filters.append(colorFilter == null ? null : colorFilter + "%20");
 		filters.append(imageType == null ? null : imageType + "%20");
-		filters.append(siteFilter == null ? null : siteFilter + ":%20");
+		filters.append(StringUtils.isEmpty(siteFilter) ? null : "site:" + siteFilter);
 		
 		Toast.makeText(this, "Saving filters:" + filters.toString(), Toast.LENGTH_SHORT).show();
 		
