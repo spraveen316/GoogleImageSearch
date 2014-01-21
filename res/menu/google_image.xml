@@ -3,7 +3,7 @@
     <item
         android:id="@+id/action_settings"
         android:icon="@drawable/ic_status"
-        android:onClick="onStatus"
+        android:onClick="onClickSettings"
         android:orderInCategory="100"
         android:showAsAction="ifRoom"/>
 

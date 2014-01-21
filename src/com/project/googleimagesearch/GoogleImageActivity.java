@@ -1,8 +1,14 @@
 package com.project.googleimagesearch;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,7 +67,7 @@ public class GoogleImageActivity extends Activity {
 		return true;
 	}
 	
-	public void onStatus(MenuItem menu) {
+	public void onClickSettings(MenuItem menu) {
 		Intent i = new Intent(this, SettingsActivity.class);
 		/*i.putExtra("label", "Second Test Input");
 		i.putExtra("integer", 5);*/
@@ -74,12 +80,38 @@ public class GoogleImageActivity extends Activity {
 			etSearchQuery.setError(getResources().getString(R.string.errorSearchString));
 			return;
 		}
-		Toast.makeText(this, "Searching for " + etSearchQuery.getText().toString(), Toast.LENGTH_SHORT).show();
+		
+		String filters = null;
+		FileInputStream fis;
+		InputStream in = null;
+		try {
+			fis = openFileInput("settings");
+			in = new BufferedInputStream(fis);
+			filters = IOUtils.toString(in);
+			in.close();
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		Toast.makeText(this,
+				"Searching for " + etSearchQuery.getText().toString()
+						+ " with filters:" + filters == null ? null : filters,
+				Toast.LENGTH_SHORT).show();
 		
 		AsyncHttpClient httpClient = new AsyncHttpClient();
 		
-		String url = "https://ajax.googleapis.com/ajax/services/search/images?rsz=8&start=0&v=1.0&q=" + Uri.encode(etSearchQuery.getText().toString());
+		String url = "https://ajax.googleapis.com/ajax/services/search/images?rsz=8&start=0&v=1.0&q="
+				+ Uri.encode(etSearchQuery.getText().toString());
 		
+		if (!StringUtils.isEmpty(filters)) {
+			url = url + "%20" + "filters";
+		}
+		
+		Log.d("url = ", url);
 		httpClient.get(url, new JsonHttpResponseHandler() {
 
 			@Override
@@ -91,7 +123,7 @@ public class GoogleImageActivity extends Activity {
 					imageResults.clear();
 					imageAdpater.addAll(ImageResult
 							.fromJSONArray(imageJSONResults));
-					Log.d("imageResults = ", imageResults.toString());
+					//Log.d("imageResults = ", imageResults.toString());
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}

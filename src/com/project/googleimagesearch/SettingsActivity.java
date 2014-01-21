@@ -1,6 +1,13 @@
 package com.project.googleimagesearch;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import org.apache.commons.lang3.StringUtils;
+
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -25,16 +32,6 @@ public class SettingsActivity extends Activity implements OnItemSelectedListener
 	
 	public void onSave(View v) {
 		
-//		Spinner spinner = (Spinner) findViewById(R.id.sImageSize);
-//		// Create an ArrayAdapter using the string array and a default spinner layout
-//		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-//		        R.string.imageSize, android.R.layout.simple_spinner_item);
-//		// Specify the layout to use when the list of choices appears
-//		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//		// Apply the adapter to the spinner
-//		spinner.setAdapter(adapter);
-//		
-		
 		Spinner imageSizeSpinner = (Spinner) findViewById(R.id.sImageSize);
 		String imageSize = imageSizeSpinner.getSelectedItem().toString();
 		
@@ -45,15 +42,32 @@ public class SettingsActivity extends Activity implements OnItemSelectedListener
 		String imageType = imageTypeSpinner.getSelectedItem().toString();
 		
 		StringBuffer filters = new StringBuffer();
-		filters.append(imageSize == null ? null : imageSize);
-		filters.append(colorFilter == null ? null : colorFilter);
-		filters.append(imageType == null ? null : imageType);
+		filters.append(imageSize == null ? null : imageSize + "%20");
+		filters.append(colorFilter == null ? null : colorFilter + "%20");
+		filters.append(imageType == null ? null : imageType + "%20");
 		
-		Toast.makeText(this, "Selected filters:" + filters.toString(), Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, "Saving filters:" + filters.toString(), Toast.LENGTH_SHORT).show();
 		
+		if (!StringUtils.isEmpty(filters)) {
+			String FILENAME = "settings";
+
+			FileOutputStream fos;
+			try {
+				fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
+				fos.write(filters.toString().getBytes());
+				fos.close();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+
 		Intent i = new Intent(this, GoogleImageActivity.class);
-		i.putExtra("label", "Second Test Input");
-		i.putExtra("integer", 5);
+//		i.putExtra("filters", filters.toString());
 		startActivity(i);
 	}
 
