@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -41,10 +42,17 @@ public class SettingsActivity extends Activity implements OnItemSelectedListener
 		Spinner imageTypeSpinner = (Spinner) findViewById(R.id.sImageType);
 		String imageType = imageTypeSpinner.getSelectedItem().toString();
 		
+		EditText etSiteFilter = (EditText) findViewById(R.id.etSiteFilter);
+		String siteFilter = null;
+		if (etSiteFilter != null && etSiteFilter.getText() != null) {
+			siteFilter = etSiteFilter.getText().toString();
+		}
+		
 		StringBuffer filters = new StringBuffer();
 		filters.append(imageSize == null ? null : imageSize + "%20");
 		filters.append(colorFilter == null ? null : colorFilter + "%20");
 		filters.append(imageType == null ? null : imageType + "%20");
+		filters.append(siteFilter == null ? null : siteFilter + ":%20");
 		
 		Toast.makeText(this, "Saving filters:" + filters.toString(), Toast.LENGTH_SHORT).show();
 		
