@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Google Image Searcher</string>
+    <string name="search">Search</string>
+    <string name="errorSearchString">Please enter valid search string</string>
+    <string name="imageSize">Image Size</string>
+    <string name="colorFilter">Color Filter</string>
+    <string name="imageType">Image Type</string>
+    <string name="siteFilter">Site Filter</string>
+    <string name="save">Save</string>
+    <string name="adv_search_view">Advanced Search View</string>
+    <string name="searchHint">Enter search term</string>
+    <string name="title_activity_image_display">ImageDisplayActivity</string>
+    <string name="action_settings">Settings</string>
+    
+</resources>
