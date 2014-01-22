@@ -6,6 +6,7 @@
     <string name="errorSearchString">Please enter valid search string</string>
     <string name="imageSize">Image Size</string>
     <string name="colorFilter">Color Filter</string>
+    <string name="load_more">Load more</string>
     <string name="imageType">Image Type</string>
     <string name="siteFilter">Site Filter</string>
     <string name="save">Save</string>

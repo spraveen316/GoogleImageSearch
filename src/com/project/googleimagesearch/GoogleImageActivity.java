@@ -27,7 +27,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -37,6 +36,7 @@ public class GoogleImageActivity extends Activity {
 	EditText etSearchQuery;
 	GridView gvResultsGrid;
 	Button bSearch;
+	Button bLoadMore;
 	List<ImageResult> imageResults = new ArrayList<ImageResult>();
 	ImageResultArrayAdapter imageAdpater;
 
@@ -60,7 +60,7 @@ public class GoogleImageActivity extends Activity {
 			
 		});
 	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.google_image, menu);
@@ -69,13 +69,11 @@ public class GoogleImageActivity extends Activity {
 	
 	public void onClickSettings(MenuItem menu) {
 		Intent i = new Intent(this, SettingsActivity.class);
-		/*i.putExtra("label", "Second Test Input");
-		i.putExtra("integer", 5);*/
 		startActivity(i);
 		
 	}
 	
-	public void onSearch(View v) {
+	public void makeApiCall (int start) {
 		if (StringUtils.isEmpty(etSearchQuery.getText().toString())) {
 			etSearchQuery.setError(getResources().getString(R.string.errorSearchString));
 			return;
@@ -97,21 +95,17 @@ public class GoogleImageActivity extends Activity {
 			e.printStackTrace();
 		}
 		
-		Toast.makeText(this,
-				"Searching for " + etSearchQuery.getText().toString()
-						+ " with filters:" + filters == null ? null : filters,
-				Toast.LENGTH_SHORT).show();
-		
 		AsyncHttpClient httpClient = new AsyncHttpClient();
 		
-		String url = "https://ajax.googleapis.com/ajax/services/search/images?rsz=8&start=0&v=1.0&q="
+		String url = "https://ajax.googleapis.com/ajax/services/search/images?rsz=8&start="+start+"&v=1.0&q="
 				+ Uri.encode(etSearchQuery.getText().toString());
 		
 		if (!StringUtils.isEmpty(filters)) {
-			url = url + "%20" + "filters";
+			url = url + "%20" + filters;
 		}
 		
 		Log.d("url = ", url);
+		
 		httpClient.get(url, new JsonHttpResponseHandler() {
 
 			@Override
@@ -121,9 +115,8 @@ public class GoogleImageActivity extends Activity {
 					imageJSONResults = response.getJSONObject("responseData")
 							.getJSONArray("results");
 					imageResults.clear();
-					imageAdpater.addAll(ImageResult
-							.fromJSONArray(imageJSONResults));
-					//Log.d("imageResults = ", imageResults.toString());
+					imageAdpater.addAll(ImageResult.fromJSONArray(imageJSONResults));
+					imageResults.addAll(ImageResult.fromJSONArray(imageJSONResults));
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -131,11 +124,21 @@ public class GoogleImageActivity extends Activity {
 		});
 	}
 	
+	public void onSearch(View v) {
+		bLoadMore.setVisibility(View.VISIBLE);
+		makeApiCall(0);
+	}
+	
+	public void onLoadMore(View v) {
+		makeApiCall(imageResults.size());
+	}
+	
 	private void setupViews () {
 		etSearchQuery = (EditText)findViewById(R.id.etSearch);
 		gvResultsGrid = (GridView)findViewById(R.id.gvSearchResult);
 		bSearch = (Button)findViewById(R.id.bSearch);
-		
+		bLoadMore = (Button)findViewById(R.id.bLoadMore);
+		bLoadMore.setVisibility(View.GONE);
 	}
 
 }
