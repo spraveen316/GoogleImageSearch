@@ -39,6 +39,7 @@ public class GoogleImageActivity extends Activity {
 	Button bLoadMore;
 	List<ImageResult> imageResults = new ArrayList<ImageResult>();
 	ImageResultArrayAdapter imageAdpater;
+	int totalCount = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +117,7 @@ public class GoogleImageActivity extends Activity {
 							.getJSONArray("results");
 					imageResults.clear();
 					imageAdpater.addAll(ImageResult.fromJSONArray(imageJSONResults));
-					imageResults.addAll(ImageResult.fromJSONArray(imageJSONResults));
+					totalCount = totalCount + 8;
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -126,11 +127,11 @@ public class GoogleImageActivity extends Activity {
 	
 	public void onSearch(View v) {
 		bLoadMore.setVisibility(View.VISIBLE);
-		makeApiCall(0);
+		makeApiCall(totalCount);
 	}
 	
 	public void onLoadMore(View v) {
-		makeApiCall(imageResults.size());
+		makeApiCall(totalCount);
 	}
 	
 	private void setupViews () {
